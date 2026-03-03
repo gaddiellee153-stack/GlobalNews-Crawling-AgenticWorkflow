@@ -147,8 +147,8 @@ IMPORTANCE_WEIGHTS = {
 # Paywall penalty for importance score
 PAYWALL_PENALTY = -20
 
-# Batch size for transformer inference
-TRANSFORMER_BATCH_SIZE = 16
+# Batch size for transformer inference (reduced from 16 to 4 for 16GB memory)
+TRANSFORMER_BATCH_SIZE = 4
 
 # Maximum text length for transformer input (in characters)
 MAX_TEXT_LENGTH = 512
@@ -1147,6 +1147,10 @@ class Stage3ArticleAnalyzer:
                 total_articles=num_articles,
             )
             all_results.extend(batch_results)
+
+            # Periodic garbage collection to manage memory on 16GB systems
+            if batch_end % 100 == 0:
+                gc.collect()
 
             if (batch_end % 100 == 0) or batch_end == num_articles:
                 elapsed = time.time() - start_time

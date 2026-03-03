@@ -187,6 +187,14 @@ def main():
     except Exception:
         pass  # Non-blocking — never fail the hook
 
+    # --- Retry Record Gap safety net ---
+    # Detect retry-count increments without corresponding history JSONL entries.
+    # Non-blocking: only logs warning to stderr, does not fail the hook.
+    try:
+        _check_missing_retry_records(project_dir)
+    except Exception:
+        pass  # Non-blocking — never fail the hook
+
     # --- Phase-Aware Compact suggestion ---
     # Suggest /compact at logical phase boundaries.
     # Non-blocking: only logs to stderr, does not fail the hook.
@@ -662,6 +670,84 @@ def _check_missing_diagnosis(project_dir):
                     )
         except OSError:
             pass
+
+
+def _check_missing_retry_records(project_dir):
+    """Detect retry-count increments without corresponding history JSONL entries.
+
+    For each gate directory, compares the retry counter value against the
+    number of entries in the retry history JSONL file. If counter > entries + 1,
+    at least one --record-attempt call was missed (delta of 1 is tolerated —
+    may be mid-rework).
+
+    P1 Compliance: Filesystem + integer comparison — deterministic.
+    Non-blocking: stderr warning only. Does not fail the hook.
+    """
+    # D-7: duplicated from validate_retry_budget.py GATE_DIRS
+    gate_dirs = {
+        "verification": "verification-logs",
+        "pacs": "pacs-logs",
+        "review": "review-logs",
+    }
+
+    for gate, dir_name in gate_dirs.items():
+        gate_dir = os.path.join(project_dir, dir_name)
+        if not os.path.isdir(gate_dir):
+            continue
+
+        try:
+            filenames = os.listdir(gate_dir)
+        except OSError:
+            continue
+
+        for fname in filenames:
+            if not fname.startswith(".step-") or not fname.endswith("-retry-count"):
+                continue
+
+            # Extract step number
+            # Format: .step-{N}-retry-count
+            step_str = fname[len(".step-"):-len("-retry-count")]
+            if not step_str.isdigit():
+                continue
+
+            counter_path = os.path.join(gate_dir, fname)
+            history_path = os.path.join(
+                gate_dir, f".step-{step_str}-retry-history.jsonl"
+            )
+
+            # Read counter value
+            counter_val = 0
+            try:
+                with open(counter_path, "r") as f:
+                    counter_val = int(f.read().strip())
+            except (IOError, ValueError):
+                continue
+
+            if counter_val == 0:
+                continue  # No retries yet
+
+            # Count JSONL entries
+            history_len = 0
+            if os.path.exists(history_path):
+                try:
+                    with open(history_path, "r") as f:
+                        for line in f:
+                            if line.strip():
+                                history_len += 1
+                except IOError:
+                    pass
+
+            # Allow delta of 1 (may be mid-rework)
+            if counter_val > history_len + 1:
+                gap = counter_val - history_len
+                print(
+                    f"⚠️ RETRY RECORD GAP: step-{step_str}/{gate}: "
+                    f"counter={counter_val}, history_entries={history_len} — "
+                    f"{gap} record(s) missing. "
+                    f"Circuit breaker may lack data. "
+                    f"Use --record-attempt after each rework.",
+                    file=sys.stderr,
+                )
 
 
 def _suggest_compact_if_needed(entries, transcript_path, snapshot_dir, session_id="unknown"):

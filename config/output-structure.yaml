@@ -1,0 +1,90 @@
+# Framework config — used by workflow execution system (NOT domain data)
+# Output Structure Validation Configuration — read-only, NOT SOT
+#
+# Used by L0d checks in validate_output_structure()
+# Step numbers are workflow-specific (GlobalNews 20-step workflow).
+# If workflow step structure changes, update this config accordingly.
+#
+# Check types:
+#   heading  — regex search for expected markdown heading (case-insensitive)
+#   marker   — literal substring presence check
+#   count    — regex findall count >= min_count
+#
+# Steps not defined here → L0d skip (only L0a-L0c run).
+# Invalid regex patterns → that specific check skipped, rest continue.
+
+steps:
+  1:
+    checks:
+      - type: "heading"
+        pattern: "## .*(RSS|Sitemap|Feed)"
+        description: "RSS/Sitemap analysis section"
+      - type: "heading"
+        pattern: "## .*(Bot|Block|Anti)"
+        description: "Bot-blocking analysis section"
+      - type: "count"
+        pattern: "^\\|[^-].*\\|.*\\|"
+        min_count: 45
+        description: "44 sites + header row in table"
+
+  3:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Feasibility|Strategy|Crawl)"
+        description: "Crawling feasibility section"
+      - type: "heading"
+        pattern: "## .*(Rate|Limit|Retry)"
+        description: "Rate limiting or retry section"
+
+  5:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Architecture|System Design|Blueprint)"
+        description: "Architecture blueprint section"
+      - type: "marker"
+        pattern: "mermaid"
+        description: "Architecture diagram (Mermaid)"
+      - type: "heading"
+        pattern: "## .*(Schema|Data Model|Parquet)"
+        description: "Data schema section"
+
+  7:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Pipeline|Stage|Analysis)"
+        description: "Analysis pipeline section"
+      - type: "count"
+        pattern: "Stage \\d+"
+        min_count: 8
+        description: "8 pipeline stages referenced"
+
+  16:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Test|Result|E2E)"
+        description: "Test results section"
+      - type: "heading"
+        pattern: "## .*(Performance|Metric|Success)"
+        description: "Performance metrics section"
+      - type: "count"
+        pattern: "\\b(PASS|FAIL|Success|Failed)\\b"
+        min_count: 10
+        description: "At least 10 pass/fail indicators across 44 sites"
+
+  19:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Quick Start|Installation|Getting Started)"
+        description: "Quick start section in documentation"
+      - type: "heading"
+        pattern: "## .*(Troubleshoot|FAQ|Common Issue)"
+        description: "Troubleshooting section"
+
+  20:
+    checks:
+      - type: "heading"
+        pattern: "## .*(Security|Vulnerabilit)"
+        description: "Security review section"
+      - type: "heading"
+        pattern: "## .*(Completeness|Coverage)"
+        description: "Completeness review section"

@@ -65,10 +65,12 @@ Every step (unless stated otherwise) follows this sequence:
 3. Run Pre-processing scripts (if any)
 4. Spawn Agent / Create Team
 5. Agent produces output → save to disk
+5a. [Steps 9-17 only] Pre-L1 /simplify Quality Pass → apply suggestions (non-blocking)
 6. Run Post-processing scripts (if any)
 7. Record output: sot_manager.py --record-output N <path>
 8. Run domain-specific validators
 9. Quality Gates: L0 → L1 (against Verification criteria) → L1.5 → (L2 if Review step)
+   L2 Review: Read config/review-focus.yaml Step N → inject focus context into @reviewer/@fact-checker prompt
 10. Translation (if @translator step)
 11. Validate transition: validate_step_transition.py --step N
 12. Advance: sot_manager.py --advance-step N

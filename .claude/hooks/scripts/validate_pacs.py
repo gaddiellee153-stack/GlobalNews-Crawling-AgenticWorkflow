@@ -42,6 +42,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from _context_lib import (
     validate_pacs_output,
     validate_step_output,
+    validate_output_structure,
 )
 
 
@@ -89,6 +90,13 @@ def main():
         output["l0_warnings"] = list(l0_warnings)
         if not l0_valid:
             output["valid"] = False
+
+        # L0d: Structure validation (soft — WARNING only, not FAIL)
+        l0d_valid, l0d_warnings = validate_output_structure(project_dir, step)
+        output["l0d_valid"] = l0d_valid
+        output["l0d_warnings"] = list(l0d_warnings)
+        # Note: L0d does NOT set output["valid"] = False
+        # L0d warnings are informational during calibration phase
 
     print(json.dumps(output, indent=2, ensure_ascii=False))
 

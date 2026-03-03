@@ -1,0 +1,94 @@
+# Framework config — used by workflow execution system (NOT domain data)
+# Review Focus Configuration — read-only, NOT SOT
+#
+# Defines per-step focus areas for @reviewer/@fact-checker.
+# Focus areas supplement (not replace) the standard 5-lens analysis.
+# Step numbers are workflow-specific (GlobalNews 20-step workflow).
+# If workflow step structure changes, update this config accordingly.
+#
+# Used by: _context_lib.validate_review_focus() → validate_review.py --check-focus
+
+steps:
+  1:
+    reviewer: "@fact-checker"
+    focus_areas:
+      - section: "## RSS/Sitemap"
+        priority: "critical"
+        domain: "web crawling"
+        check_for: "44 sites each with actual URL verification, no placeholders"
+      - section: "## Bot-Blocking"
+        priority: "important"
+        domain: "anti-block"
+        check_for: "Blocking level classification backed by actual HTTP probes"
+
+  3:
+    reviewer: "@fact-checker"
+    focus_areas:
+      - section: "## Rate Limiting"
+        priority: "critical"
+        domain: "legal compliance"
+        check_for: "Per-site rate limit respects robots.txt Crawl-delay"
+      - section: "## Retry Architecture"
+        priority: "important"
+        domain: "reliability"
+        check_for: "4-level retry math: 5×2×3×3=90 maximum attempts verified"
+
+  5:
+    reviewer: "@reviewer"
+    focus_areas:
+      - section: "## Data Schema"
+        priority: "critical"
+        domain: "data architecture"
+        check_for: "Parquet schema matches PRD §7.1 columns exactly"
+      - section: "## Memory Budget"
+        priority: "important"
+        domain: "resource constraints"
+        check_for: "Peak memory < 16GB, gc.collect() points specified"
+      - section: "## Module Interfaces"
+        priority: "important"
+        domain: "architecture"
+        check_for: "Conductor Pattern respected — Claude generates scripts, not data"
+
+  7:
+    reviewer: "@reviewer"
+    focus_areas:
+      - section: "## Analysis Techniques"
+        priority: "critical"
+        domain: "NLP pipeline"
+        check_for: "All 56 techniques mapped to specific pipeline stages"
+      - section: "## Model Selection"
+        priority: "important"
+        domain: "NLP"
+        check_for: "Korean NLP models explicitly chosen (Kiwi, ko-sbert) with rationale"
+
+  16:
+    reviewer: "@reviewer"
+    focus_areas:
+      - section: "## Per-Site Results"
+        priority: "critical"
+        domain: "testing"
+        check_for: "All 44 sites tested, success rate >= 80%"
+      - section: "## Mandatory Fields"
+        priority: "critical"
+        domain: "data quality"
+        check_for: "title/published_at/body/source_url present in >= 99% of articles"
+      - section: "## Performance"
+        priority: "important"
+        domain: "resource constraints"
+        check_for: "E2E time <= 3 hours on M2 Pro, no OOM during analysis"
+
+  20:
+    reviewer: "@reviewer"
+    focus_areas:
+      - section: "## Security"
+        priority: "critical"
+        domain: "security"
+        check_for: "No hardcoded credentials, no SQL injection, input validation on external data"
+      - section: "## Completeness"
+        priority: "critical"
+        domain: "coverage"
+        check_for: "All 44 site adapters present, all 56 analysis techniques accounted for"
+      - section: "## Reliability"
+        priority: "important"
+        domain: "fault tolerance"
+        check_for: "3-tier retry + Circuit Breaker + self-recovery correctly implemented"

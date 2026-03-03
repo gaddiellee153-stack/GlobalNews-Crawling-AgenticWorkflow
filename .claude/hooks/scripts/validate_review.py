@@ -32,6 +32,7 @@ from _context_lib import (
     calculate_pacs_delta,
     validate_review_sequence,
     verify_pacs_arithmetic,
+    validate_review_focus,
 )
 
 
@@ -54,6 +55,10 @@ def main():
     parser.add_argument(
         "--check-pacs-arithmetic", action="store_true",
         help="Also validate pACS arithmetic (T9 — generator + reviewer)"
+    )
+    parser.add_argument(
+        "--check-focus", action="store_true",
+        help="Also check review focus context (FS1-FS4 — soft validation)"
     )
     args = parser.parse_args()
 
@@ -130,6 +135,15 @@ def main():
             output["warnings"].append(seq_warning)
             if not seq_valid:
                 output["valid"] = False
+
+    # Optional: focus context validation (FS1-FS3 — soft, never blocks)
+    if args.check_focus:
+        focus_valid, focus_warnings = validate_review_focus(
+            project_dir, step, review_path
+        )
+        output["focus_valid"] = focus_valid
+        output["focus_warnings"] = focus_warnings
+        # Note: focus validation is always soft — does NOT affect output["valid"]
 
     print(json.dumps(output, indent=2, ensure_ascii=False))
 

@@ -4486,6 +4486,111 @@ def validate_review_sequence(project_dir, step_number):
     return (True, None)
 
 
+def validate_review_focus(project_dir, step_number, review_path=None):
+    """Soft validation for review focus context (FS1-FS3).
+
+    P1 Compliance: Filesystem + YAML parse + substring search — deterministic.
+    SOT Compliance: Read-only — config/ and review-logs/ only.
+
+    All checks are WARNING, never FAIL — this is a soft validation layer.
+    Missing config → full skip, empty warnings returned.
+
+    Checks:
+      FS1: config/review-focus.yaml exists + YAML valid
+      FS2: Step N has focus_areas defined in config
+      FS3: Review report mentions at least 1 focus section name
+
+    Args:
+        project_dir: Project root directory path
+        step_number: Step number (int)
+        review_path: Override review file path (default: review-logs/step-N-review.md)
+
+    Returns:
+        tuple: (is_valid: bool, warnings: list[str])
+        - is_valid: Always True (soft validation — never blocks)
+        - warnings: List of advisory messages
+    """
+    warnings = []
+    config_path = os.path.join(project_dir, "config", "review-focus.yaml")
+
+    # FS1: Config file exists + valid YAML
+    if not os.path.exists(config_path):
+        # No config → graceful skip (backward compatible)
+        return (True, [])
+
+    try:
+        import yaml
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+    except Exception as e:
+        warnings.append(f"FS1 WARNING: Cannot parse review-focus.yaml: {e}")
+        return (True, warnings)
+
+    if not isinstance(config, dict) or "steps" not in config:
+        warnings.append("FS1 WARNING: review-focus.yaml missing 'steps' key")
+        return (True, warnings)
+
+    # FS2: Step has focus_areas defined
+    steps_config = config.get("steps", {})
+    step_config = steps_config.get(step_number) or steps_config.get(str(step_number))
+    if not step_config:
+        # Step not defined in focus config → no focus for this step
+        return (True, [])
+
+    focus_areas = step_config.get("focus_areas", [])
+    if not focus_areas:
+        warnings.append(
+            f"FS2 WARNING: Step {step_number} defined in review-focus.yaml "
+            f"but has empty focus_areas"
+        )
+        return (True, warnings)
+
+    # FS3: Review report mentions at least 1 focus section
+    if review_path is None:
+        review_path = os.path.join(
+            project_dir, "review-logs", f"step-{step_number}-review.md"
+        )
+
+    if not os.path.exists(review_path):
+        # No review yet → can't check FS3
+        return (True, [])
+
+    try:
+        with open(review_path, "r", encoding="utf-8") as f:
+            review_content = f.read()
+    except (IOError, UnicodeDecodeError):
+        return (True, [])
+
+    # Check if at least one focus section is mentioned in the review
+    mentioned = 0
+    for area in focus_areas:
+        section_name = area.get("section", "")
+        # Strip markdown heading markers for search
+        clean_name = section_name.lstrip("#").strip()
+        if clean_name and clean_name.lower() in review_content.lower():
+            mentioned += 1
+
+    if mentioned == 0:
+        section_names = [a.get("section", "?") for a in focus_areas]
+        warnings.append(
+            f"FS3 WARNING: Review for step {step_number} does not mention "
+            f"any focus sections: {section_names}"
+        )
+
+    # FS4: Check if [Focus] tag appears in Issues table (advisory)
+    # reviewer.md instructs tagging focus-related issues with [Focus] prefix
+    if mentioned > 0:
+        focus_tag_re = re.compile(r'\[Focus\]', re.IGNORECASE)
+        focus_tag_count = len(focus_tag_re.findall(review_content))
+        if focus_tag_count == 0:
+            warnings.append(
+                f"FS4 WARNING: Review for step {step_number} mentions focus "
+                f"sections but no [Focus] tagged issues found in Issues table"
+            )
+
+    return (True, warnings)
+
+
 # =============================================================================
 # Translation P1 Validation (T1-T9) + Universal pACS + Verification Log P1
 # =============================================================================
@@ -5069,6 +5174,118 @@ def validate_step_output(project_dir, step_number, sot_data=None):
 
     has_fail = any("FAIL" in w for w in warnings)
     return (not has_fail, warnings)
+
+
+def validate_output_structure(project_dir, step_number, output_path=None):
+    """L0d: Deterministic content structure validation.
+
+    P1: regex + substring only. No LLM judgment.
+    SOT: Read-only (config + output file).
+
+    Reads config/output-structure.yaml for expected patterns per step.
+    If config is absent or step is undefined, returns (True, []) — backward compatible.
+
+    Checks:
+      L0d-heading: Expected markdown heading exists (re.search, case-insensitive)
+      L0d-marker: Required literal string exists (substring, case-insensitive)
+      L0d-count: Pattern minimum occurrence count (len(re.findall))
+
+    All failures are WARNING, not FAIL — soft guard during calibration phase.
+
+    Args:
+        project_dir: Project root directory
+        step_number: Step number
+        output_path: Override output file path (default: from SOT)
+
+    Returns:
+        tuple: (is_valid: bool, warnings: list[str])
+        - is_valid: True if all defined checks pass (always True if no config)
+        - warnings: List of L0d WARNING messages
+    """
+    warnings = []
+    config_path = os.path.join(project_dir, "config", "output-structure.yaml")
+
+    # Config absence → graceful skip (backward compatible)
+    if not os.path.exists(config_path):
+        return (True, [])
+
+    try:
+        import yaml
+        with open(config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+    except Exception:
+        # Invalid YAML / parse error → skip
+        return (True, [])
+
+    if not isinstance(config, dict) or "steps" not in config:
+        return (True, [])
+
+    # Step lookup (int or string key)
+    steps_config = config.get("steps", {})
+    step_config = steps_config.get(step_number) or steps_config.get(str(step_number))
+    if not step_config or "checks" not in step_config:
+        return (True, [])
+
+    # Resolve output path from SOT if not provided
+    if output_path is None:
+        outputs = _read_sot_outputs(project_dir)
+        step_key = f"step-{step_number}"
+        raw_path = outputs.get(step_key)
+        if not raw_path:
+            return (True, [])  # No output recorded → skip
+        output_path = os.path.join(project_dir, raw_path)
+
+    if not os.path.exists(output_path):
+        return (True, [])  # File doesn't exist → L0a catches this
+
+    # Read output content
+    try:
+        with open(output_path, "r", encoding="utf-8") as f:
+            content = f.read()
+    except (IOError, UnicodeDecodeError):
+        return (True, [])
+
+    # Execute each check
+    checks = step_config.get("checks", [])
+    for check in checks:
+        check_type = check.get("type", "")
+        pattern = check.get("pattern", "")
+        description = check.get("description", "")
+
+        if not pattern:
+            continue
+
+        if check_type == "heading":
+            try:
+                if not re.search(pattern, content, re.MULTILINE | re.IGNORECASE):
+                    warnings.append(
+                        f"L0d-heading WARNING: Missing expected heading "
+                        f"pattern /{pattern}/ — {description}"
+                    )
+            except re.error:
+                continue  # Invalid regex → skip this check
+
+        elif check_type == "marker":
+            if pattern.lower() not in content.lower():
+                warnings.append(
+                    f"L0d-marker WARNING: Missing expected marker "
+                    f"'{pattern}' — {description}"
+                )
+
+        elif check_type == "count":
+            min_count = check.get("min_count", 1)
+            try:
+                matches = re.findall(pattern, content, re.MULTILINE)
+                if len(matches) < min_count:
+                    warnings.append(
+                        f"L0d-count WARNING: Found {len(matches)} matches "
+                        f"(expected >= {min_count}) for /{pattern}/ — {description}"
+                    )
+            except re.error:
+                continue  # Invalid regex → skip this check
+
+    is_valid = len(warnings) == 0
+    return (is_valid, warnings)
 
 
 def validate_verification_log(project_dir, step_number):

@@ -901,10 +901,11 @@ Translation pACS = min(Ft, Ct, Nt). 행동 트리거는 동일 (GREEN/YELLOW/RED
 #### 품질 계층 아키텍처
 
 ```
-L0   Anti-Skip Guard (Hook — deterministic)
-L1   Verification Gate (Agent self-check)
-L1.5 pACS Self-Rating (Agent confidence)
-L2   Adversarial Review (Enhanced L2) ← 이 섹션
+L0      Anti-Skip Guard (Hook — deterministic)
+Pre-L1  /simplify Quality Pass (비차단 — 코드 단계 Step 9-17만)
+L1      Verification Gate (Agent self-check)
+L1.5    pACS Self-Rating (Agent confidence)
+L2      Adversarial Review (Enhanced L2) ← 이 섹션
        ├── Content critical analysis (LLM — @reviewer / @fact-checker)
        ├── Independent pACS scoring (LLM → Python validates)
        └── P1 deterministic validation (Python — validate_review.py)
@@ -918,7 +919,7 @@ L2   Adversarial Review (Enhanced L2) ← 이 섹션
 | `@fact-checker` | Read, Glob, Grep, WebSearch, WebFetch | 사실 검증 — 독립 소스 대비 claim-by-claim 확인 | opus |
 
 - **도구 분리 근거 (P2)**: `@reviewer`는 코드/문서의 내부 논리를 검토하므로 읽기만 필요. `@fact-checker`는 외부 사실 검증이 필요하므로 웹 접근이 필요. 최소 권한 원칙.
-- **Sub-agent 선택 근거**: 단일 리뷰어 = Sub-agent (동기적 피드백 루프). 리뷰 결과를 즉시 반영해야 하므로 Agent Team 비동기 패턴보다 효율적.
+- **Sub-agent 선택 근거 (품질 기반)**: 단일 리뷰어 = Sub-agent (동기적 피드백 루프). 리뷰 결과를 즉시 재작업에 반영하여 품질을 극대화해야 하므로 동기적 Sub-agent가 적합. Agent Team은 병렬화 이점이 없는 단일 리뷰어에서는 오케스트레이션 오버헤드만 추가한다.
 
 #### 실행 프로토콜
 
@@ -931,8 +932,8 @@ L2   Adversarial Review (Enhanced L2) ← 이 섹션
 
 ```
 PASS → Translation (있는 경우) → SOT update → 다음 단계
-FAIL → Rework (최대 10회) → Re-review
-       ↓ 10회 초과
+FAIL → Rework (최대 10회, 무진전 시 조기 에스컬레이션) → Re-review
+       ↓ 예산 소진 또는 3회 연속 ≤5점 개선
        사용자 에스컬레이션
 ```
 
@@ -1057,14 +1058,14 @@ Delta = |Reviewer - Generator| = {N}
 #### Autopilot에서의 Adversarial Review
 
 - Review PASS → 자동 진행 (Translation 포함)
-- Review FAIL → 자동 재작업 (최대 10회, 초과 시 사용자 에스컬레이션)
+- Review FAIL → 자동 재작업 (최대 10회, 무진전 감지 시 조기 에스컬레이션)
 - pACS Delta ≥ 15 → Decision Log에 기록 + 재조정 권고
 - Review Decision Log: `autopilot-logs/step-N-decision.md`에 리뷰 결과 포함
 
 #### 실행 순서 제약
 
 ```
-Task → L0 → L1 → L1.5 → Review(L2) → PASS → Translation → SOT update
+Task → L0 → [Pre-L1] → L1 → L1.5 → Review(L2) → PASS → Translation → SOT update
 ```
 
 - Translation은 Review PASS 후에만 실행 (P1 `validate_review_sequence()` 강제)
@@ -1080,6 +1081,18 @@ Task → L0 → L1 → L1.5 → Review(L2) → PASS → Translation → SOT upda
 | `@reviewer`/`@fact-checker` 에이전트 미정의 | Sub-agent 호출 실패 시 사용자 에스컬레이션 |
 
 > **설계 결정**: Adversarial Review를 기존 L2 Calibration의 Enhanced 버전으로 위치시킨다. L2 Calibration의 "교차 검증"을 "적대적 검토"로 강화하되, 기존 L0/L1/L1.5 계층은 전혀 변경하지 않는다. `Review:` 필드가 없는 단계는 이전과 동일하게 동작한다.
+
+#### Pre-L1 /simplify Quality Pass (비차단)
+
+| 속성 | 값 |
+|------|-----|
+| 위치 | L0 → **Pre-L1** → L1 → L1.5 → L2 |
+| 성격 | 비차단 (advisory) — 게이트가 아닌 품질 패스 |
+| 적용 범위 | 코드 생성 단계 Step 9-17만 |
+| 도구 | `/simplify` 빌트인 커맨드 (3개 병렬 에이전트 코드 리뷰) |
+| 동작 | 코드 재사용·품질·효율 3축 자동 리뷰 → 기능 변경 없는 개선만 적용 |
+
+코드 단계가 아닌 단계(연구, 설계, 문서)에서는 skip한다.
 
 ---
 

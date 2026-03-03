@@ -136,7 +136,7 @@ GlobalNews-Crawling-AgenticWorkflow/
 │   │   └── review-final.md                (Implementation Phase 완료 검토 — /review-final)
 │   ├── hooks/scripts/                     ← Context Preservation System + Setup Hooks + Safety Hooks
 │   │   ├── context_guard.py               (Hook 통합 디스패처 — 4개 이벤트의 단일 진입점)
-│   │   ├── _context_lib.py                (공유 라이브러리 — 파싱, 생성, SOT 캡처, Smart Throttling, Autopilot 상태 읽기·검증, ULW 감지, 절삭 상수 중앙화, sot_paths() 경로 통합, 다단계 전환 감지, 결정 품질 태그 정렬, Error Taxonomy 12패턴+Resolution 매칭, Success Patterns(Edit/Write→Bash 성공 시퀀스 추출), IMMORTAL-aware 압축+감사 추적, E5 Guard 중앙화(is_rich_snapshot+update_latest_with_guard), Knowledge Archive 통합(archive_and_index_session — 부분 실패 격리), 경로 태그 추출(extract_path_tags), KI 스키마 검증(_validate_session_facts — RLM 필수 키 보장), SOT 스키마 검증(validate_sot_schema — 워크플로우 state.yaml 구조 무결성 8항목 검증: S1-S6 기본 + S7 pacs 구조(S7a-S7e: dimensions·score·weak_dimension·history·pre_mortem_flag) + S8 active_team 구조(S8a-S8e: name·status·tasks_completed·tasks_pending·completed_summaries)), Quality Gate 상태 추출(_extract_quality_gate_state — pacs/review/verification 로그에서 최신 단계 품질 게이트 상태를 IMMORTAL 스냅샷에 보존), Adversarial Review P1 검증(validate_review_output+parse_review_verdict+calculate_pacs_delta+validate_review_sequence — Enhanced L2 결정론적 검증), Translation P1 검증(validate_translation_output T1-T7 + check_glossary_freshness T8 + verify_pacs_arithmetic T9 범용 + validate_verification_log V1a-V1c), Predictive Debugging P1(aggregate_risk_scores+validate_risk_scores RS1-RS6+_RISK_WEIGHTS 13개 가중치+_RECENCY_DECAY_DAYS 감쇠), Cross-Step Traceability P1 검증(validate_cross_step_traceability CT1-CT5 + _TRACE_MARKER_RE + _HEADING_SLUG_RE), Domain Knowledge Structure P1 검증(validate_domain_knowledge DK1-DK7 + _DKS_REF_RE + _DKS_ID_RE), Abductive Diagnosis Layer(diagnose_failure_context 사전 증거 수집 + validate_diagnosis_log AD1-AD10 사후 검증 + _extract_diagnosis_patterns KA 아카이빙 + Fast-Path FP1-FP3 + 가설 우선순위 H1/H2/H3), Decision Log P1 검증(validate_decision_log DL1-DL6 + _DL_STEP_RE/_DL_CHECKPOINT_RE/_DL_DECISION_RE/_DL_RATIONALE_RE/_DL_TIMESTAMP_RE 5개 regex), 모듈 레벨 regex 컴파일(9개+8개+8개+4개+5개+5개 패턴 — 프로세스당 1회), Importance-Based Retention(_importance_tier Tier 0-3 순수 함수 + validate_retention_result RI1-RI6 P1 검증 + cleanup_knowledge_index 3-step 중요도 기반 선택 + FIFO fail-safe), 반복 에러 타입 추출(extract_recurring_error_types — P1 Consumer, 전체 KI 에러 타입 세션별 집계), 학습된 패턴 추출(extract_learned_patterns — P1 Consumer, cross-session success_patterns 집계))
+│   │   ├── _context_lib.py                (공유 라이브러리 — 파싱, 생성, SOT 캡처, Smart Throttling, Autopilot 상태 읽기·검증, ULW 감지, 절삭 상수 중앙화, sot_paths() 경로 통합, 다단계 전환 감지, 결정 품질 태그 정렬, Error Taxonomy 12패턴+Resolution 매칭, Success Patterns(Edit/Write→Bash 성공 시퀀스 추출), IMMORTAL-aware 압축+감사 추적, E5 Guard 중앙화(is_rich_snapshot+update_latest_with_guard), Knowledge Archive 통합(archive_and_index_session — 부분 실패 격리), 경로 태그 추출(extract_path_tags), KI 스키마 검증(_validate_session_facts — RLM 필수 키 보장), SOT 스키마 검증(validate_sot_schema — 워크플로우 state.yaml 구조 무결성 8항목 검증: S1-S6 기본 + S7 pacs 구조(S7a-S7e: dimensions·score·weak_dimension·history·pre_mortem_flag) + S8 active_team 구조(S8a-S8e: name·status·tasks_completed·tasks_pending·completed_summaries)), Quality Gate 상태 추출(_extract_quality_gate_state — pacs/review/verification 로그에서 최신 단계 품질 게이트 상태를 IMMORTAL 스냅샷에 보존), Adversarial Review P1 검증(validate_review_output+parse_review_verdict+calculate_pacs_delta+validate_review_sequence — Enhanced L2 결정론적 검증), Translation P1 검증(validate_translation_output T1-T7 + check_glossary_freshness T8 + verify_pacs_arithmetic T9 범용 + validate_verification_log V1a-V1c), Predictive Debugging P1(aggregate_risk_scores+validate_risk_scores RS1-RS6+_RISK_WEIGHTS 13개 가중치+_RECENCY_DECAY_DAYS 감쇠), Cross-Step Traceability P1 검증(validate_cross_step_traceability CT1-CT5 + _TRACE_MARKER_RE + _HEADING_SLUG_RE), Domain Knowledge Structure P1 검증(validate_domain_knowledge DK1-DK7 + _DKS_REF_RE + _DKS_ID_RE), Abductive Diagnosis Layer(diagnose_failure_context 사전 증거 수집 + validate_diagnosis_log AD1-AD10 사후 검증 + _extract_diagnosis_patterns KA 아카이빙 + Fast-Path FP1-FP3 + 가설 우선순위 H1/H2/H3), Decision Log P1 검증(validate_decision_log DL1-DL6 + _DL_STEP_RE/_DL_CHECKPOINT_RE/_DL_DECISION_RE/_DL_RATIONALE_RE/_DL_TIMESTAMP_RE 5개 regex), 모듈 레벨 regex 컴파일(9개+8개+8개+4개+5개+5개 패턴 — 프로세스당 1회), Importance-Based Retention(_importance_tier Tier 0-3 순수 함수 + validate_retention_result RI1-RI6 P1 검증 + cleanup_knowledge_index 3-step 중요도 기반 선택 + FIFO fail-safe), 반복 에러 타입 추출(extract_recurring_error_types — P1 Consumer, 전체 KI 에러 타입 세션별 집계), 학습된 패턴 추출(extract_learned_patterns — P1 Consumer, cross-session success_patterns 집계), Review Focus P1 검증(validate_review_focus FS1-FS3 — config/review-focus.yaml 기반 리뷰 집중 영역 소프트 검증), L0d Content Structure P1 검증(validate_output_structure L0d-heading/marker/count — config/output-structure.yaml 기반 산출물 구조 결정론적 검증))
 │   │   ├── save_context.py                (SessionEnd/PreCompact 저장 엔진 + compact 제안 마커 정리(SessionEnd only))
 │   │   ├── restore_context.py             (SessionStart 복원 — RLM 포인터 + 동적 RLM 쿼리 힌트 + Error→Resolution 자동 표면화 + 반복 에러 타입 자동 표면화(P1 Consumer) + 학습된 작업 패턴 자동 표면화(P1 Consumer) + Predictive Debugging 위험 점수 캐시 생성)
 │   │   ├── update_work_log.py             (PostToolUse 작업 로그 누적 — Edit|Write|Bash|Task|NotebookEdit|TeamCreate|SendMessage|TaskCreate|TaskUpdate 9개 도구 추적)
@@ -144,14 +144,14 @@ GlobalNews-Crawling-AgenticWorkflow/
 │   │   ├── diagnose_context.py             (Abductive Diagnosis 사전 분석 독립 스크립트 — 품질 게이트 FAIL 시 증거 번들 수집, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_diagnosis.py          (Abductive Diagnosis P1 검증 독립 스크립트 — AD1-AD10 구조적 무결성, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_decision_log.py       (Decision Log P1 검증 독립 스크립트 — DL1-DL6 구조적 무결성, JSON 출력, Hook 아님 — Orchestrator가 (human) 단계 자동 승인 후 수동 호출)
-│   │   ├── validate_pacs.py               (pACS P1 검증 독립 스크립트 — PA1-PA7 구조적 무결성(PA7: RED < 50 차단) + L0 Anti-Skip Guard, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
-│   │   ├── validate_review.py             (Adversarial Review P1 검증 독립 스크립트 — JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
+│   │   ├── validate_pacs.py               (pACS P1 검증 독립 스크립트 — PA1-PA7 구조적 무결성(PA7: RED < 50 차단) + L0 Anti-Skip Guard(L0a-L0c) + L0d 구조 검증, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
+│   │   ├── validate_review.py             (Adversarial Review P1 검증 독립 스크립트 — R1-R5 구조적 무결성 + pACS Delta + Focus 검증(FS1-FS3), JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_traceability.py       (Cross-Step Traceability P1 검증 독립 스크립트 — CT1-CT5 교차 단계 추적성, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_domain_knowledge.py   (Domain Knowledge Structure P1 검증 독립 스크립트 — DK1-DK7 도메인 지식 구조, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_translation.py        (Translation P1 검증 독립 스크립트 — T1-T9 + glossary 검증 + Review verdict 필수 체크, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_verification.py       (Verification Log P1 검증 독립 스크립트 — V1a-V1c 구조적 무결성, JSON 출력, Hook 아님 — Orchestrator가 수동 호출)
 │   │   ├── validate_workflow.py           (Workflow.md DNA Inheritance P1 검증 독립 스크립트 — W1-W8 구조적 무결성(W7 CT Verification-Validator 정합성, W8 DKS Verification-Validator 정합성), JSON 출력, Hook 아님 — workflow-generator 완료 후 수동 호출)
-│   │   ├── validate_retry_budget.py       (Retry Budget P1 검증 독립 스크립트 — RB1-RB3 재시도 예산 판정(ULW-aware), JSON 출력, Hook 아님 — Orchestrator가 재시도 전후 수동 호출)
+│   │   ├── validate_retry_budget.py       (Retry Budget P1 검증 독립 스크립트 — RB1-RB3 재시도 예산 판정(ULW-aware) + RP1-RP3 Circuit Breaker(진전도 감지) + 히스토리 기록, JSON 출력, Hook 아님 — Orchestrator가 재시도 전후 수동 호출)
 │   │   ├── setup_init.py                  (Setup Init — 인프라 건강 검증 + SOT 쓰기 패턴 검증(P1 할루시네이션 봉쇄) + 런타임 디렉터리 자동 생성(SOT 존재 시), --init 트리거)
 │   │   ├── setup_maintenance.py           (Setup Maintenance — 주기적 건강 검진, --maintenance 트리거)
 │   │   ├── block_destructive_commands.py  (PreToolUse Safety Hook — 위험 명령·시크릿 소스·파괴적 SQL 차단(P1 할루시네이션 봉쇄), exit code 2로 차단 + Claude 자기 수정)
@@ -211,9 +211,11 @@ GlobalNews-Crawling-AgenticWorkflow/
 │   ├── analysis/                         (8단계 NLP 파이프라인)
 │   ├── storage/                          (Parquet ZSTD + SQLite FTS5/vec)
 │   └── utils/                            (로깅, 설정, 에러 처리)
-├── config/                               ← [자식] 설정 파일
-│   ├── sources.yaml                      (44개 사이트 설정)
-│   └── pipeline.yaml                     (8단계 파이프라인 설정)
+├── config/                               ← 설정 파일 (도메인 + 프레임워크)
+│   ├── sources.yaml                      (44개 사이트 설정 — 도메인)
+│   ├── pipeline.yaml                     (8단계 파이프라인 설정 — 도메인)
+│   ├── output-structure.yaml             (L0d 구조 검증 설정 — 프레임워크, NOT SOT)
+│   └── review-focus.yaml                 (리뷰 집중 영역 설정 — 프레임워크, NOT SOT)
 ├── data/                                 ← [자식] 날짜별 파티션 데이터 (gitignored)
 ├── research/                             ← [자식] Research Phase 산출물 (Steps 1-4)
 ├── planning/                             ← [자식] Planning Phase 산출물 (Steps 5-8)
@@ -254,7 +256,7 @@ GlobalNews-Crawling-AgenticWorkflow/
 - **결정 품질 태그 정렬**: 스냅샷의 "주요 설계 결정" 섹션(IMMORTAL 우선순위)은 품질 태그 기반으로 정렬된다 — `[explicit]` > `[decision]` > `[rationale]` > `[intent]` 순으로 15개 슬롯을 채워, 일상적 의도 선언(`하겠습니다` 패턴)이 실제 설계 결정을 밀어내지 않는다. 비교·트레이드오프·선택 패턴도 추출한다.
 - **IMMORTAL-aware 압축**: 스냅샷 크기 초과 시 Phase 7 hard truncate에서 IMMORTAL 섹션을 우선 보존한다. 비-IMMORTAL 콘텐츠를 먼저 절삭하고, IMMORTAL 자체가 한계를 초과하는 극단적 경우에도 IMMORTAL 텍스트의 시작 부분을 보존한다. **압축 감사 추적**: 각 압축 Phase가 제거한 문자 수를 HTML 주석(`<!-- compression-audit: ... -->`)으로 스냅샷 끝에 기록한다 (Phase 1~7 단계별 delta + 최종 크기). 렌더링에 영향 없이 Grep으로 디버깅 가능.
 - **Error Taxonomy**: 도구 에러를 12개 패턴(file_not_found, permission, syntax, timeout, dependency, edit_mismatch, type_error, value_error, connection, memory, git_error, command_not_found)으로 분류한다. Knowledge Archive의 error_patterns 필드에 기록되어, "unknown" 분류를 ~30%로 감소시킨다. False positive 방지를 위해 negative lookahead, 한정어 매칭 등을 적용한다. **Error→Resolution 매칭**: 에러 발생 후 5 entries 이내의 성공적 도구 호출을 file-aware 매칭으로 탐지하여 `resolution` 필드에 기록한다 (도구명 + 파일명). 매칭 실패 시 `null`. `Grep "resolution" knowledge-index.jsonl`로 해결 패턴을 cross-session 탐색 가능.
-- **P1 할루시네이션 봉쇄 (Hallucination Prevention)**: 반복적으로 100% 정확해야 하는 작업을 Python 코드로 강제한다. (1) **KI 스키마 검증**: `_validate_session_facts()`가 knowledge-index 쓰기 직전 RLM 필수 키(session_id, tags, final_status, diagnosis_patterns 등 11개) 존재를 보장 — 누락 시 안전 기본값 채움. (2) **부분 실패 격리**: `archive_and_index_session()`에서 archive 파일 쓰기 실패가 knowledge-index 갱신을 차단하지 않음 — RLM 핵심 자산 보호. (3) **SOT 쓰기 패턴 검증**: `setup_init.py`의 `_check_sot_write_safety()`가 Hook 스크립트에서 SOT 파일명 + 쓰기 패턴 공존을 AST 함수 경계 기반으로 탐지 (Tier 1: 비-SOT 스크립트의 SOT 참조 차단, Tier 2: SOT-aware 스크립트의 함수별 쓰기 패턴 검사). (4) **SOT 스키마 검증**: `validate_sot_schema()`가 워크플로우 state.yaml의 구조적 무결성을 8항목(S1-S6: current_step 타입·범위, outputs 타입·키 형식, 미래 단계 산출물 탐지, workflow_status 유효값, auto_approved_steps 정합성 + S7: pacs 5개 필드 검증(S7a dimensions F/C/L 0-100, S7b current_step_score 0-100, S7c weak_dimension F/C/L, S7d history dict→{score, weak}, S7e pre_mortem_flag string) + S8: active_team 5개 필드 검증(S8a name string, S8b status partial|all_completed, S8c tasks_completed list, S8d tasks_pending list, S8e completed_summaries dict→dict))으로 검증 — SessionStart와 Stop hook 양쪽에서 실행. (5) **Adversarial Review P1 검증**: `validate_review_output()`이 리뷰 보고서의 구조적 무결성(파일 존재 R1, 최소 크기 R2, 필수 섹션 4개 R3, PASS/FAIL 명시적 추출 R4, 이슈 테이블 ≥ 1행 R5)을 결정론적으로 검증. `parse_review_verdict()`가 regex로 이슈 심각도(Critical/Warning/Suggestion) 카운트 추출. `calculate_pacs_delta()`가 Generator-Reviewer pACS 차이(Delta ≥ 15 → 재조정 필요)를 산술 연산. `validate_review_sequence()`가 Review PASS → Translation 순서를 파일 타임스탬프로 강제. 독립 실행 스크립트: `validate_review.py`. (6) **Translation P1 검증**: `validate_translation_output()`이 번역 산출물의 구조적 무결성을 7항목(파일 존재 T1, 최소 크기 T2, 영어 원본 존재 T3, .ko.md 확장자 T4, 비-공백 T5, 헤딩 수 ±20% T6, 코드 블록 수 일치 T7)으로 검증. `check_glossary_freshness()`가 glossary 타임스탬프 신선도(T8). `verify_pacs_arithmetic()`이 모든 pACS 로그의 min() 산술 정확성(T9 — 범용). `validate_verification_log()`이 검증 로그 구조적 무결성(V1a-V1c: 파일 존재, 기준별 PASS/FAIL, 논리적 일관성). `validate_translation.py`는 Review verdict=PASS를 필수 체크(--check-sequence 없이도 항상 실행). 독립 실행 스크립트: `validate_translation.py`. (7) **pACS P1 검증**: `validate_pacs_output()`이 pACS 로그의 구조적 무결성을 6항목(PA1 파일 존재, PA2 최소 크기 50 bytes, PA3 차원 점수 ≥ 3개(0-100 범위), PA4 Pre-mortem 섹션 존재, PA5 min() 산술 정확성(verify_pacs_arithmetic 위임), PA7 RED 차단(pACS < 50 → FAIL — 단계 진행 차단))으로 검증. PA6(선택): 점수-색상 영역 정합성(RED/YELLOW/GREEN). 독립 실행 스크립트: `validate_pacs.py`. (8) **L0 Anti-Skip Guard 코드 구현**: `validate_step_output()`이 산출물 파일의 L0 검증을 3항목(L0a SOT outputs.step-N 경로의 파일 존재, L0b 파일 크기 ≥ MIN_OUTPUT_SIZE(100 bytes), L0c 비-공백 확인)으로 수행. Orchestrator가 current_step 증가 전 호출. `validate_pacs.py --check-l0`으로 pACS + L0 동시 검증 가능. (9) **Predictive Debugging P1 검증**: `validate_risk_scores()`가 risk-scores.json의 구조적 무결성을 6항목(RS1 필수 키, RS2 data_sessions 정수, RS3 risk_score 범위, RS4 error_count 산술 정합, RS5 resolution_rate 범위, RS6 top_risk_files 정렬+존재)으로 검증. `aggregate_risk_scores()`가 생성 직후 자기 검증 호출. (10) **Retry Budget P1 검증**: `validate_retry_budget.py`가 재시도 예산을 결정론적으로 판정한다. RB1(카운터 파일 읽기 — 정수, 없으면 0), RB2(ULW 활성 감지 — 스냅샷 regex), RB3(예산 비교 — `retries_used < max_retries`). `max_retries`는 ULW 활성 시 3, 비활성 시 2. `--increment` 모드로 카운터를 atomic write로 증가. Orchestrator가 Verification Gate/pACS RED/Review FAIL 재시도 전후에 호출. 카운터 파일: `{gate}-logs/.step-N-retry-count`. (11) **Importance-Based Retention P1 검증**: `validate_retention_result()`가 knowledge-index.jsonl 로테이션 후 결과의 구조적 무결성을 5항목(RI1 비어있지 않음, RI2 카운트 ≤ MAX(200), RI4 날짜 수준 시간순 정렬(같은 날 내 재정렬 허용 — 동시 세션 자연 현상), RI5 session_id 중복 없음, RI6 입력 > MAX 시 정확히 MAX개 출력)으로 검증. RI3(JSON 유효성)은 의도적 제외 — 기존 malformed 라인을 Tier 0으로 처리하므로 RI3이 불필요한 FIFO fallback을 유발. `_importance_tier(entry)`가 4계층 중요도(Tier 3: design_decisions/resolved errors/diagnosis_patterns, Tier 2: team_summaries/ulw_active/pacs_min, Tier 1: modified_files, Tier 0: trivial)를 순수 함수로 판정. `cleanup_knowledge_index()`가 3단계 알고리즘(Parse+Score → tier DESC·position ASC 정렬로 상위 MAX개 선택 → 원본 위치 재정렬로 시간순 복원)으로 중요도 기반 보존 수행. P1 검증 실패 시 FIFO fallback(현행 동작)으로 자동 복귀 — 회귀 불가능. `aggregate_risk_scores()` 부수 효과: 에러 이력이 있는 구 세션이 Tier 3(resolved errors)으로 분류되어 더 오래 유지됨 — Predictive Debugging 정확도 향상. 테스트: `tests/unit/test_importance_retention.py` (49 tests). (12) **Decision Log P1 검증**: `validate_decision_log()`이 autopilot 결정 로그의 구조적 무결성을 6항목(DL1 파일 존재, DL2 최소 크기 100 bytes, DL3 필수 섹션 5개(Step, Checkpoint Type, Decision, Rationale, Timestamp), DL4 단계 번호 일치, DL5 Rationale 비공백 ≥ 10자, DL6 Decision 비공백 ≥ 5자)으로 검증. 독립 실행 스크립트: `validate_decision_log.py`. Orchestrator가 (human) 단계 자동 승인 후 수동 호출. 테스트: `tests/unit/test_autopilot_gates.py` (15 DL tests).
+- **P1 할루시네이션 봉쇄 (Hallucination Prevention)**: 반복적으로 100% 정확해야 하는 작업을 Python 코드로 강제한다. (1) **KI 스키마 검증**: `_validate_session_facts()`가 knowledge-index 쓰기 직전 RLM 필수 키(session_id, tags, final_status, diagnosis_patterns 등 11개) 존재를 보장 — 누락 시 안전 기본값 채움. (2) **부분 실패 격리**: `archive_and_index_session()`에서 archive 파일 쓰기 실패가 knowledge-index 갱신을 차단하지 않음 — RLM 핵심 자산 보호. (3) **SOT 쓰기 패턴 검증**: `setup_init.py`의 `_check_sot_write_safety()`가 Hook 스크립트에서 SOT 파일명 + 쓰기 패턴 공존을 AST 함수 경계 기반으로 탐지 (Tier 1: 비-SOT 스크립트의 SOT 참조 차단, Tier 2: SOT-aware 스크립트의 함수별 쓰기 패턴 검사). (4) **SOT 스키마 검증**: `validate_sot_schema()`가 워크플로우 state.yaml의 구조적 무결성을 8항목(S1-S6: current_step 타입·범위, outputs 타입·키 형식, 미래 단계 산출물 탐지, workflow_status 유효값, auto_approved_steps 정합성 + S7: pacs 5개 필드 검증(S7a dimensions F/C/L 0-100, S7b current_step_score 0-100, S7c weak_dimension F/C/L, S7d history dict→{score, weak}, S7e pre_mortem_flag string) + S8: active_team 5개 필드 검증(S8a name string, S8b status partial|all_completed, S8c tasks_completed list, S8d tasks_pending list, S8e completed_summaries dict→dict))으로 검증 — SessionStart와 Stop hook 양쪽에서 실행. (5) **Adversarial Review P1 검증**: `validate_review_output()`이 리뷰 보고서의 구조적 무결성(파일 존재 R1, 최소 크기 R2, 필수 섹션 4개 R3, PASS/FAIL 명시적 추출 R4, 이슈 테이블 ≥ 1행 R5)을 결정론적으로 검증. `parse_review_verdict()`가 regex로 이슈 심각도(Critical/Warning/Suggestion) 카운트 추출. `calculate_pacs_delta()`가 Generator-Reviewer pACS 차이(Delta ≥ 15 → 재조정 필요)를 산술 연산. `validate_review_sequence()`가 Review PASS → Translation 순서를 파일 타임스탬프로 강제. 독립 실행 스크립트: `validate_review.py`. (5b) **Review Focus Context 검증**: `validate_review_focus()`가 `config/review-focus.yaml` 기반으로 리뷰 집중 영역의 소프트 검증을 4항목(FS1 config 파일 존재+YAML 유효, FS2 해당 step의 focus_areas 존재, FS3 리뷰 보고서에 focus 섹션명 1개 이상 언급, FS4 focus 섹션 언급 시 `[Focus]` 태그 이슈 존재 확인)으로 수행. 모든 체크는 WARNING(비차단 — 소프트 검증). config 부재 → 전체 skip. `validate_review.py --check-focus`로 독립 실행 가능. (6) **Translation P1 검증**: `validate_translation_output()`이 번역 산출물의 구조적 무결성을 7항목(파일 존재 T1, 최소 크기 T2, 영어 원본 존재 T3, .ko.md 확장자 T4, 비-공백 T5, 헤딩 수 ±20% T6, 코드 블록 수 일치 T7)으로 검증. `check_glossary_freshness()`가 glossary 타임스탬프 신선도(T8). `verify_pacs_arithmetic()`이 모든 pACS 로그의 min() 산술 정확성(T9 — 범용). `validate_verification_log()`이 검증 로그 구조적 무결성(V1a-V1c: 파일 존재, 기준별 PASS/FAIL, 논리적 일관성). `validate_translation.py`는 Review verdict=PASS를 필수 체크(--check-sequence 없이도 항상 실행). 독립 실행 스크립트: `validate_translation.py`. (7) **pACS P1 검증**: `validate_pacs_output()`이 pACS 로그의 구조적 무결성을 6항목(PA1 파일 존재, PA2 최소 크기 50 bytes, PA3 차원 점수 ≥ 3개(0-100 범위), PA4 Pre-mortem 섹션 존재, PA5 min() 산술 정확성(verify_pacs_arithmetic 위임), PA7 RED 차단(pACS < 50 → FAIL — 단계 진행 차단))으로 검증. PA6(선택): 점수-색상 영역 정합성(RED/YELLOW/GREEN). 독립 실행 스크립트: `validate_pacs.py`. (8) **L0 Anti-Skip Guard 코드 구현**: `validate_step_output()`이 산출물 파일의 L0 검증을 3항목(L0a SOT outputs.step-N 경로의 파일 존재, L0b 파일 크기 ≥ MIN_OUTPUT_SIZE(100 bytes), L0c 비-공백 확인)으로 수행. Orchestrator가 current_step 증가 전 호출. `validate_pacs.py --check-l0`으로 pACS + L0 + L0d 동시 검증 가능. (8b) **L0d Content Structure Validation**: `validate_output_structure()`가 `config/output-structure.yaml` 기반으로 산출물의 구조적 무결성을 3가지 타입(L0d-heading: regex 마크다운 헤딩 존재, L0d-marker: 리터럴 substring 존재, L0d-count: regex findall 카운트 ≥ min_count)으로 결정론적 검증. config 부재/단계 미정의 → `(True, [])` 반환(후방 호환). 모든 실패는 WARNING(비차단 — 캘리브레이션 단계). `validate_pacs.py --check-l0` 내부에서 자동 실행. (9) **Predictive Debugging P1 검증**: `validate_risk_scores()`가 risk-scores.json의 구조적 무결성을 6항목(RS1 필수 키, RS2 data_sessions 정수, RS3 risk_score 범위, RS4 error_count 산술 정합, RS5 resolution_rate 범위, RS6 top_risk_files 정렬+존재)으로 검증. `aggregate_risk_scores()`가 생성 직후 자기 검증 호출. (10) **Retry Budget P1 검증**: `validate_retry_budget.py`가 재시도 예산을 결정론적으로 판정한다. RB1(카운터 파일 읽기 — 정수, 없으면 0), RB2(ULW 활성 감지 — 스냅샷 regex), RB3(예산 비교 — `retries_used < max_retries`). `max_retries`는 ULW 활성 시 15, 비활성 시 10. `--check-and-increment` 모드가 예산과 Circuit Breaker를 **단일 호출로 동시 강제**(P1 봉쇄 — LLM이 진전도 확인을 우회 불가): 예산 허용 + CB CLOSED → 카운터 증가 + `can_retry: true`; 예산 소진 → `can_retry: false, reason: budget_exhausted`; CB OPEN → `can_retry: false, reason: circuit_breaker_open`(카운터 미증가 — 예산 보존). Orchestrator가 Verification Gate/pACS RED/Review FAIL 재시도 전후에 호출. 카운터 파일: `{gate}-logs/.step-N-retry-count`. 히스토리 파일: `{gate}-logs/.step-N-retry-history.jsonl`. Circuit Breaker(`_validate_retry_progress` — 점수 추이)와 Abductive Diagnosis(`_gather_retry_history` — 재시도 맥락)는 별도 데이터 소스를 사용하는 직교 시스템이다. `validate_retry_budget.py`는 self-contained이며 `_context_lib.py`에 대한 import가 없다(의도적 장애 격리). (11) **Importance-Based Retention P1 검증**: `validate_retention_result()`가 knowledge-index.jsonl 로테이션 후 결과의 구조적 무결성을 5항목(RI1 비어있지 않음, RI2 카운트 ≤ MAX(200), RI4 날짜 수준 시간순 정렬(같은 날 내 재정렬 허용 — 동시 세션 자연 현상), RI5 session_id 중복 없음, RI6 입력 > MAX 시 정확히 MAX개 출력)으로 검증. RI3(JSON 유효성)은 의도적 제외 — 기존 malformed 라인을 Tier 0으로 처리하므로 RI3이 불필요한 FIFO fallback을 유발. `_importance_tier(entry)`가 4계층 중요도(Tier 3: design_decisions/resolved errors/diagnosis_patterns, Tier 2: team_summaries/ulw_active/pacs_min, Tier 1: modified_files, Tier 0: trivial)를 순수 함수로 판정. `cleanup_knowledge_index()`가 3단계 알고리즘(Parse+Score → tier DESC·position ASC 정렬로 상위 MAX개 선택 → 원본 위치 재정렬로 시간순 복원)으로 중요도 기반 보존 수행. P1 검증 실패 시 FIFO fallback(현행 동작)으로 자동 복귀 — 회귀 불가능. `aggregate_risk_scores()` 부수 효과: 에러 이력이 있는 구 세션이 Tier 3(resolved errors)으로 분류되어 더 오래 유지됨 — Predictive Debugging 정확도 향상. 테스트: `tests/unit/test_importance_retention.py` (49 tests). (12) **Decision Log P1 검증**: `validate_decision_log()`이 autopilot 결정 로그의 구조적 무결성을 6항목(DL1 파일 존재, DL2 최소 크기 100 bytes, DL3 필수 섹션 5개(Step, Checkpoint Type, Decision, Rationale, Timestamp), DL4 단계 번호 일치, DL5 Rationale 비공백 ≥ 10자, DL6 Decision 비공백 ≥ 5자)으로 검증. 독립 실행 스크립트: `validate_decision_log.py`. Orchestrator가 (human) 단계 자동 승인 후 수동 호출. 테스트: `tests/unit/test_autopilot_gates.py` (15 DL tests).
 - **Abductive Diagnosis P1 검증**: `validate_diagnosis_log()`이 진단 로그의 구조적 무결성을 10항목(AD1 파일 존재, AD2 최소 크기 100 bytes, AD3 Gate 필드 일치, AD4 선택 가설 존재, AD5 증거 ≥ 1개, AD6 Action Plan 섹션 존재, AD7 순방향 참조 금지, AD8 가설 ≥ 2개, AD9 선택 가설 일관성, AD10 이전 진단 참조(재시도 > 0))으로 검증. `diagnose_failure_context()`가 사전 증거 수집(retry_history, upstream_evidence, hypothesis_priority, fast_path, raw_evidence). Fast-Path(FP1-FP3)로 결정론적 단축. 독립 실행 스크립트: `diagnose_context.py`(사전 분석), `validate_diagnosis.py`(사후 검증). Knowledge Archive에 `diagnosis_patterns`로 아카이빙.
 - **Cross-Step Traceability P1 검증**: `validate_cross_step_traceability()`가 산출물의 교차 단계 추적성을 5항목(CT1 trace 마커 존재, CT2 참조 단계 산출물 존재, CT3 섹션 ID 해결(Warning), CT4 최소 밀도 ≥ 3, CT5 순방향 참조 금지)으로 검증. 독립 실행 스크립트: `validate_traceability.py`. Verification 기준에 교차 단계 추적성이 포함된 단계에서 수동 호출.
 - **Domain Knowledge Structure P1 검증**: `validate_domain_knowledge()`가 domain-knowledge.yaml의 구조적 무결성을 7항목(DK1 파일 존재+YAML 유효, DK2 metadata 필수 키, DK3 entities 구조(id 유일+slug, type, attributes), DK4 relations 참조 무결성(subject/object→entities.id, confidence), DK5 constraints 구조, DK6 산출물 DKS 참조 해결, DK7 제약 조건 비위반)으로 검증. 독립 실행 스크립트: `validate_domain_knowledge.py`. DKS 패턴 사용 워크플로우에서 수동 호출. 선택적 — 모든 워크플로우가 필요로 하지 않음.
@@ -290,7 +292,35 @@ GlobalNews-Crawling-AgenticWorkflow/
 > **`if test -f; then; fi` 패턴 통일**: 모든 Hook 명령이 `if test -f; then; fi` 패턴을 사용한다. 이전의 `|| true` 패턴(exit code 2 차단 신호를 삼키는 잠복 버그)을 제거하여, `context_guard.py` 자식 스크립트에 차단 기능 추가 시에도 exit code 2가 안전하게 전파된다.
 > **PreToolUse Safety Hook의 독립 실행 근거**: `block_destructive_commands.py`(안전)와 `block_test_file_edit.py`(TDD 보호)는 컨텍스트 보존과는 다른 도메인이다. exit code 2 보존이 필수이므로, `context_guard.py`를 거치지 않고 직접 실행한다. `block_test_file_edit.py`는 `.tdd-guard` 파일 존재 시에만 활성화된다 (`touch .tdd-guard`로 TDD 모드 시작, `rm .tdd-guard`로 해제).
 > **PostToolUse Safety Hook의 독립 실행 근거**: `block_secret_leak.py`(시크릿 출력 감지)는 Bash 전용이며, 기존 PostToolUse(`update_work_log.py` — 9개 도구 추적)와 matcher 범위가 다르다. exit code 항상 0(경고 전용, best-effort)이므로 `context_guard.py`를 거치지 않고 직접 실행한다.
-> **D-7 의도적 중복 인스턴스**: (1) `REQUIRED_SCRIPTS` — `setup_init.py` ↔ `setup_maintenance.py` (21개 스크립트 목록). (2) `predictive_debug_guard.py` 상수 — `RISK_THRESHOLD`/`MIN_SESSIONS` ↔ `_context_lib.py`의 `_RISK_SCORE_THRESHOLD`/`_RISK_MIN_SESSIONS`. (3) `ERROR_TAXONOMY` 타입명 — `_classify_error_patterns()` 내 12개 타입 ↔ `_RISK_WEIGHTS` 13개 키. (4) ULW 감지 패턴 — `_context_lib.py`의 `_gather_retry_history()` ↔ `validate_retry_budget.py`의 `_ULW_SNAPSHOT_RE` ↔ `restore_context.py`의 ULW 상태 문자열 검사 (모두 `"ULW 상태"` 기반). (5) 재시도 한도 상수 — `validate_retry_budget.py`의 `DEFAULT_MAX_RETRIES`/`ULW_MAX_RETRIES` ↔ `_context_lib.py`의 `_DEFAULT_MAX_RETRIES`/`_ULW_MAX_RETRIES` ↔ `restore_context.py`의 ULW+Autopilot 주입 텍스트. (6) `HUMAN_STEPS` — `sot_manager.py`의 `HUMAN_STEPS` ↔ `run_quality_gates.py`의 `HUMAN_STEPS` ↔ `validate_step_transition.py`의 `HUMAN_STEPS` ↔ `_context_lib.py`의 `HUMAN_STEPS_SET` (모두 `frozenset({4, 8, 18})`). 각 D-7 인스턴스는 코드에 cross-reference 주석이 있으며, 한쪽 변경 시 반드시 대응 쪽도 동기화해야 한다.
+> **D-7 의도적 중복 인스턴스**: (1) `REQUIRED_SCRIPTS` — `setup_init.py` ↔ `setup_maintenance.py` (21개 스크립트 목록). (2) `predictive_debug_guard.py` 상수 — `RISK_THRESHOLD`/`MIN_SESSIONS` ↔ `_context_lib.py`의 `_RISK_SCORE_THRESHOLD`/`_RISK_MIN_SESSIONS`. (3) `ERROR_TAXONOMY` 타입명 — `_classify_error_patterns()` 내 12개 타입 ↔ `_RISK_WEIGHTS` 13개 키. (4) ULW 감지 패턴 — `_context_lib.py`의 `_gather_retry_history()` ↔ `validate_retry_budget.py`의 `_ULW_SNAPSHOT_RE` ↔ `restore_context.py`의 ULW 상태 문자열 검사 (모두 `"ULW 상태"` 기반). (5) 재시도 한도 상수 — `validate_retry_budget.py`의 `DEFAULT_MAX_RETRIES`/`ULW_MAX_RETRIES` ↔ `_context_lib.py`의 `_DEFAULT_MAX_RETRIES`/`_ULW_MAX_RETRIES` ↔ `restore_context.py`의 ULW+Autopilot 주입 텍스트. (6) `HUMAN_STEPS` — `sot_manager.py`의 `HUMAN_STEPS` ↔ `run_quality_gates.py`의 `HUMAN_STEPS` ↔ `validate_step_transition.py`의 `HUMAN_STEPS` ↔ `_context_lib.py`의 `HUMAN_STEPS_SET` (모두 `frozenset({4, 8, 18})`). (7) `GATE_DIRS` 매핑 — `validate_retry_budget.py`의 `GATE_DIRS` ↔ `generate_context_summary.py`의 `_check_missing_retry_records()` 내 `gate_dirs` (모두 `{"verification": "verification-logs", "pacs": "pacs-logs", "review": "review-logs"}`). 각 D-7 인스턴스는 코드에 cross-reference 주석이 있으며, 한쪽 변경 시 반드시 대응 쪽도 동기화해야 한다.
+
+## Memory Architecture — Dual-Layer Design
+
+프로젝트는 두 개의 독립적이고 상호보완적인 메모리 계층을 사용한다:
+
+| 계층 | 시스템 | 성격 | 저장소 |
+|------|--------|------|--------|
+| **Layer 1** | Knowledge Archive (KA) | P1 결정론적 — 구조화 운영 데이터 | `.claude/context-snapshots/knowledge-index.jsonl` |
+| **Layer 2** | Auto-memory | Claude 자율 — 유기적 학습 | `~/.claude-cysinsight/.../memory/` |
+
+### 역할 분담
+
+| 데이터 유형 | Layer | 이유 |
+|-----------|-------|------|
+| 에러 패턴·해결 기록 | KA (Layer 1) | P1 결정론적 분류 — LLM 판단 불필요 |
+| pACS 히스토리 | KA (Layer 1) | 산술 데이터 — P1 검증 가능 |
+| 위험 점수·Predictive Debugging | KA (Layer 1) | 파일별 집계 — 산술 연산 |
+| 세션 팩트(phase, tool_sequence, tags) | KA (Layer 1) | 구조화된 메타데이터 — 프로그래밍적 탐색 |
+| 사용자 코딩 스타일·선호 | Auto-memory (Layer 2) | 자연어 선호 — 구조화 어려움 |
+| 워크플로우 관례·반복 패턴 | Auto-memory (Layer 2) | 세션 간 유기적 학습 |
+| 프로젝트 구조·아키텍처 요약 | Auto-memory (Layer 2) | 자연어 설명 — RLM 검색보다 직접 로딩이 효율적 |
+
+### 중복 금지 규칙
+
+- KA가 이미 추적하는 데이터를 Auto-memory에 중복 저장하지 않는다
+- KA의 `error_patterns`가 이미 에러를 12개 타입으로 분류하므로, Auto-memory에 에러 패턴을 별도 기록하지 않는다
+- KA의 `success_patterns`가 이미 성공 시퀀스를 추출하므로, Auto-memory에 도구 사용 패턴을 별도 기록하지 않는다
+- Auto-memory는 KA가 캡처하지 못하는 **의미론적·맥락적** 학습에 집중한다
 
 ## 시작 트리거 (Start Triggers)
 
@@ -429,13 +459,21 @@ Autopilot 모드에서 워크플로우를 실행할 때, 각 단계마다 아래
 - [ ] 단계의 모든 작업을 **완전히** 실행 (축약 금지 — 절대 기준 1)
 - [ ] 산출물을 **완전한 품질**로 생성
 
+#### Pre-L1 /simplify Quality Pass (코드 생성 단계 Step 9-17만, 비차단)
+- [ ] 산출물 디스크 저장 후, L1 Verification 전에 실행
+- [ ] `/simplify` 실행 → 제안 사항 적용 (기능 변경 없는 개선만)
+- [ ] 비차단 — /simplify는 게이트가 아닌 품질 패스 (advisory)
+- [ ] /simplify 적용 후 산출물 재저장
+
 #### 단계 완료 후 (Verification Gate — `Verification` 필드 있는 단계만)
 - [ ] 산출물 파일을 디스크에 저장
 - [ ] 산출물을 각 `Verification` 기준 대비 자기 검증
 - [ ] 실패 기준 있으면:
-  - [ ] P1 재시도 예산 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate verification --project-dir . --check-and-increment`
-  - [ ] `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재실행
-  - [ ] `can_retry: false` → 사용자 에스컬레이션 (재시도 예산 소진, 카운터 미증가)
+  - [ ] P1 재시도 예산+진전도 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate verification --project-dir . --check-and-increment`
+    - `can_retry: false`, `reason: budget_exhausted` → 사용자 에스컬레이션 (재시도 예산 소진)
+    - `can_retry: false`, `reason: circuit_breaker_open` → 사용자 에스컬레이션 (진전 없음 — 3회 연속 ≤5점 개선)
+    - `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재실행
+  - [ ] 재실행 후 결과 기록: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate verification --project-dir . --record-attempt --pacs-score {score}`
 - [ ] 모든 기준 PASS 확인
 - [ ] `verification-logs/step-N-verify.md` 생성
 - [ ] P1 검증 실행: `python3 .claude/hooks/scripts/validate_verification.py --step N --project-dir .`
@@ -460,12 +498,15 @@ Autopilot 모드에서 워크플로우를 실행할 때, 각 단계마다 아래
 - [ ] `pacs-logs/step-N-pacs.md` 생성
 - [ ] SOT `pacs` 필드 갱신 (current_step_score, dimensions, weak_dimension, history)
 - [ ] pACS RED(< 50) 시:
-  - [ ] P1 재시도 예산 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate pacs --project-dir . --check-and-increment`
-  - [ ] `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재작업 + 재채점
-  - [ ] `can_retry: false` → 사용자 에스컬레이션 (재시도 예산 소진, 카운터 미증가)
+  - [ ] P1 재시도 예산+진전도 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate pacs --project-dir . --check-and-increment`
+    - `can_retry: false`, `reason: budget_exhausted` → 사용자 에스컬레이션 (재시도 예산 소진)
+    - `can_retry: false`, `reason: circuit_breaker_open` → 사용자 에스컬레이션 (진전 없음 — 3회 연속 ≤5점 개선)
+    - `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재작업 + 재채점
+  - [ ] 재작업 후 결과 기록: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate pacs --project-dir . --record-attempt --pacs-score {score}`
 - [ ] pACS YELLOW(50-69) 시: Decision Log에 약점 차원 기록 후 진행
-- [ ] P1 검증 실행: `python3 .claude/hooks/scripts/validate_pacs.py --step N --check-l0 --project-dir .`
+- [ ] P1 검증 실행: `python3 .claude/hooks/scripts/validate_pacs.py --step N --check-l0 --project-dir .` (L0a-L0c + L0d 구조 검증)
 - [ ] P1 검증 결과 `valid: true` 확인 (PA1-PA7 + L0 모두 통과)
+- [ ] L0d WARNING 있으면: 산출물 구조 재확인 (비차단 — 캘리브레이션 중)
 - [ ] SOT `outputs`에 산출물 경로 기록
 - [ ] SOT `current_step` +1 증가
 - [ ] `(human)` 단계: `autopilot-logs/step-N-decision.md` 생성
@@ -491,13 +532,18 @@ Autopilot 모드에서 워크플로우를 실행할 때, 각 단계마다 아래
 - [ ] P1 검증 결과 `valid: true` 확인 (R1-R5 모두 통과)
 - [ ] Verdict 확인:
   - [ ] PASS → 다음 단계 진행 (Translation 포함)
-  - [ ] FAIL → P1 재시도 예산 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate review --project-dir . --check-and-increment`
-  - [ ] `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재작업
-  - [ ] `can_retry: false` → 사용자 에스컬레이션 (재시도 예산 소진, 카운터 미증가)
+  - [ ] FAIL → P1 재시도 예산+진전도 확인+소비: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate review --project-dir . --check-and-increment`
+    - `can_retry: false`, `reason: budget_exhausted` → 사용자 에스컬레이션 (재시도 예산 소진)
+    - `can_retry: false`, `reason: circuit_breaker_open` → 사용자 에스컬레이션 (진전 없음 — 3회 연속 ≤5점 개선)
+    - `can_retry: true` → **Abductive Diagnosis 수행** (아래 진단 서브섹션 참조) → 진단 기반 재작업
+  - [ ] 재작업 후 결과 기록: `python3 .claude/hooks/scripts/validate_retry_budget.py --step N --gate review --project-dir . --record-attempt --pacs-score {score}`
 - [ ] pACS Delta ≥ 15 시 → Decision Log에 기록 + 재조정 사유 문서화
 - [ ] Review FAIL 상태에서 Translation 실행 금지
 
 #### 품질 게이트 FAIL 시 진단 (Abductive Diagnosis — 재시도 가능 시 수행)
+
+> Circuit Breaker(점수 정체 감지)와 FP3(동일 가설 반복 감지)는 보완적 안전망이다. Circuit Breaker는 Diagnosis **전**에 판정하고, FP3는 Diagnosis **중**에 판정한다.
+
 - [ ] Step A — P1 사전 증거 수집: `python3 .claude/hooks/scripts/diagnose_context.py --step N --gate {verification|pacs|review} --project-dir .`
 - [ ] Fast-Path 확인: `fast_path.eligible == true` → FP1/FP2는 즉시 재실행, FP3는 사용자 에스컬레이션
 - [ ] Fast-Path 해당 없으면 → Step B — LLM 진단: 증거 번들 + 가설 우선순위 기반으로 원인 분석
@@ -530,6 +576,8 @@ Autopilot 모드에서 워크플로우를 실행할 때, 각 단계마다 아래
 | pACS 점수를 전부 90+ 부여 | "정말 잘 했으니 당연" | Pre-mortem에서 약점 못 찾으면 자기기만. pACS는 약점 인식이 전제 |
 | Review 이슈 0건으로 PASS 처리 | "완벽한 산출물" | 완벽한 산출물은 없다. P1(R5)이 자동 거부 |
 | 진단 없이 동일 접근법으로 재시도 | "이번에는 될 것" | 같은 접근법 = 같은 실패. Abductive Diagnosis 필수 |
+| Circuit breaker OPEN인데 재시도 | "한 번 더 하면 나아질 것" | 3회 연속 ≤5점 개선 = 구조적 문제. 다른 접근법이나 사용자 개입 필요 |
+| 코드 단계(Step 9-17)에서 /simplify 생략 | "코드가 충분히 깨끗" | 기계적 이슈 축적 → L2 리뷰 부담 증가, 전체 품질 저하 |
 
 **위 테이블 외 추가 금지 사항:**
 - `(hook)` exit code 2 차단 무시 금지
