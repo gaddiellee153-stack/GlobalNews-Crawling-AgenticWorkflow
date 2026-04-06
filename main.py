@@ -431,13 +431,98 @@ def cmd_status(args: argparse.Namespace) -> int:
         ("features", PROJECT_ROOT / "data" / "features"),
         ("analysis", PROJECT_ROOT / "data" / "analysis"),
         ("output", PROJECT_ROOT / "data" / "output"),
+        ("insights", PROJECT_ROOT / "data" / "insights"),
     ]:
         exists = path.exists()
         file_count = len(list(path.glob("*"))) if exists else 0
         print(f"  data/{name}/: {'EXISTS' if exists else 'MISSING'} ({file_count} files)")
 
+    # Insight pipeline status
+    insight_state_path = PROJECT_ROOT / "data" / "insights" / "insight_state.json"
+    if insight_state_path.exists():
+        try:
+            state = json.loads(insight_state_path.read_text(encoding="utf-8"))
+            n_completed = len(state.get("modules_completed", []))
+            n_failed = len(state.get("modules_failed", []))
+            n_skipped = len(state.get("modules_skipped", []))
+            n_total = n_completed + n_failed + n_skipped
+            print(f"\nInsight Pipeline (Workflow B):")
+            print(f"  Last run: {state.get('last_run', '?')}")
+            print(f"  Window: {state.get('last_window', '?')} days ending {state.get('last_end_date', '?')}")
+            print(f"  Modules: {n_completed}/{n_total} completed"
+                  f"{f', {n_failed} failed' if n_failed else ''}"
+                  f"{f', {n_skipped} skipped' if n_skipped else ''}")
+            print(f"  Validation: {'PASS' if state.get('validation_passed') else 'FAIL'}")
+            print(f"  Output: {state.get('run_id', '?')}")
+            cov = state.get("data_coverage", {})
+            if cov:
+                print(f"  Coverage: {cov.get('available_days', '?')}/{cov.get('window_days', '?')} days "
+                      f"({cov.get('coverage_ratio', 0):.0%})")
+        except (json.JSONDecodeError, OSError):
+            pass
+
     print()
     return 0
+
+
+def cmd_insight(args: argparse.Namespace) -> int:
+    """Execute the big data insight analytics pipeline.
+
+    Reads accumulated Stage 1-4 outputs across a multi-date window
+    to produce structural insights (cross-lingual, geopolitical, economic, etc.).
+
+    Args:
+        args: Parsed command-line arguments.
+
+    Returns:
+        Exit code (0 = success, 1 = failure).
+    """
+    logger = get_logger("main.insight")
+
+    end_date = args.end_date or args.date
+    window_days = args.window or 30
+
+    logger.info(
+        "Insight pipeline started: window=%d days, end_date=%s, module=%s",
+        window_days, end_date, args.module or "all",
+    )
+
+    from src.insights.pipeline import run_insight_pipeline
+
+    t0 = time.monotonic()
+    try:
+        result = run_insight_pipeline(
+            end_date=end_date,
+            window_days=window_days,
+            module=args.module,
+        )
+    except Exception as e:
+        logger.error("Insight pipeline failed: %s", e, exc_info=True)
+        return 1
+
+    elapsed = time.monotonic() - t0
+
+    # Summary
+    logger.info(
+        "Insight pipeline %s: %d/%d modules (%.1fs)",
+        "COMPLETE" if result.success else "PARTIAL",
+        len(result.modules_completed),
+        len(result.modules_completed) + len(result.modules_failed) + len(result.modules_skipped),
+        elapsed,
+    )
+    if result.modules_completed:
+        logger.info("  Completed: %s", ", ".join(result.modules_completed))
+    if result.modules_skipped:
+        logger.info("  Skipped: %s", ", ".join(result.modules_skipped))
+    if result.modules_failed:
+        logger.warning("  Failed: %s", ", ".join(result.modules_failed))
+    logger.info(
+        "  Validation: %s", "PASS" if result.validation_passed else
+        f"FAIL ({len(result.validation_errors)} errors)",
+    )
+    logger.info("  Output: %s", result.output_dir)
+
+    return 0 if result.success else 1
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -472,10 +557,11 @@ Pipeline: 8 stages, 56 analysis techniques
 
     parser.add_argument(
         "--mode",
-        choices=["crawl", "analyze", "full", "status"],
+        choices=["crawl", "analyze", "full", "status", "insight"],
         required=True,
         help="Execution mode: crawl (URL discovery + extraction), "
              "analyze (8-stage NLP pipeline), full (crawl + analyze), "
+             "insight (big data insight analytics on accumulated data), "
              "status (show pipeline status)",
     )
 
@@ -514,6 +600,29 @@ Pipeline: 8 stages, 56 analysis techniques
         action="store_true",
         default=False,
         help="Run all 8 analysis stages sequentially.",
+    )
+
+    parser.add_argument(
+        "--window",
+        type=int,
+        default=None,
+        help="Analysis window in days for --mode insight (default: 30). "
+             "Common values: 7 (weekly), 30 (monthly), 90 (quarterly).",
+    )
+
+    parser.add_argument(
+        "--module",
+        type=str,
+        default=None,
+        help="Run a specific insight module only (e.g., m1_crosslingual, m5_geopolitical). "
+             "Use with --mode insight.",
+    )
+
+    parser.add_argument(
+        "--end-date",
+        type=_validate_date,
+        default=None,
+        help="End date for insight analysis window (default: --date or today).",
     )
 
     parser.add_argument(
@@ -561,6 +670,7 @@ def main() -> int:
         "analyze": cmd_analyze,
         "full": cmd_full,
         "status": cmd_status,
+        "insight": cmd_insight,
     }
 
     handler = handlers.get(args.mode)

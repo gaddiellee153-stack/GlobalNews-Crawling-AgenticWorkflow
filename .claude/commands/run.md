@@ -77,6 +77,23 @@ Based on user request, run the appropriate mode:
 .venv/bin/python main.py --mode crawl --date $(date +%Y-%m-%d) --groups A,B --log-level INFO 2>&1
 ```
 
+#### Insight Analysis (Big Data Insights on accumulated data)
+```bash
+# 30-day window (default)
+.venv/bin/python main.py --mode insight --window 30 --end-date $(date +%Y-%m-%d) --log-level INFO 2>&1
+
+# Weekly window
+.venv/bin/python main.py --mode insight --window 7 --end-date $(date +%Y-%m-%d) --log-level INFO 2>&1
+
+# Specific module only
+.venv/bin/python main.py --mode insight --window 30 --module m1_crosslingual --log-level INFO 2>&1
+```
+
+After insight analysis completes, show the report:
+```bash
+cat data/insights/$(ls -t data/insights/ | head -1)/synthesis/insight_report.md
+```
+
 **Important**: Run in foreground (not background) so progress can be monitored and errors reported in real-time.
 
 ### Step 4: Monitor and Report
@@ -117,6 +134,9 @@ If the user's request implies a specific mode:
 | "분석을 하자", "빅데이터 분석", "NLP 파이프라인" | `analyze` |
 | "시작하자", "전체 실행", "풀 파이프라인" | `full` |
 | "한국 뉴스만", "Group A만" | `crawl --groups A,B` |
+| "통찰 분석", "인사이트 분석", "빅데이터 통찰" | `insight --window 30` |
+| "주간 통찰", "이번 주 통찰" | `insight --window 7` |
+| "분기 통찰", "3개월 통찰" | `insight --window 90` |
 | "상태 확인", "결과 확인" | `status` |
 
 ## Error Handling

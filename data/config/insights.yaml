@@ -1,0 +1,15 @@
+# Insight Pipeline Configuration (Workflow B)
+# Reference: research/bigdata-insight-workflow-design.md
+
+version: 1
+default_window_days: 30
+min_coverage_ratio: 0.7
+
+modules:
+  m1_crosslingual: { enabled: true }
+  m2_narrative: { enabled: true }
+  m3_entity: { enabled: true }
+  m4_temporal: { enabled: true }
+  m5_geopolitical: { enabled: true }
+  m6_economic: { enabled: true }
+  m7_synthesis: { enabled: true, mode: template }

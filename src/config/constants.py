@@ -275,3 +275,26 @@ VALID_PARQUET_COMPRESSIONS = {"zstd", "snappy", "lz4", "none"}
 # Change this value → 5 consumers auto-sync via import, 1 AST-validated by
 # scripts/validate_enabled_default_sync.py (ED1-ED7 + ED-CROSS).
 ENABLED_DEFAULT = True
+
+# =============================================================================
+# Insight Pipeline Constants (Workflow B — Big Data Insight Analytics)
+# =============================================================================
+
+# Output directory for insight analysis (separate from daily analysis output)
+DATA_INSIGHTS_DIR = DATA_DIR / "insights"
+INSIGHTS_YAML_PATH = DATA_CONFIG_DIR / "insights.yaml"
+
+# Default analysis window (days)
+INSIGHT_DEFAULT_WINDOW_DAYS = 30
+INSIGHT_MIN_WINDOW_DAYS = 7
+INSIGHT_MAX_WINDOW_DAYS = 365
+
+# Minimum data coverage ratio within window (70% = at least 21/30 days)
+INSIGHT_MIN_COVERAGE_RATIO = 0.7
+
+# Per-module minimum data requirements
+INSIGHT_MIN_LANGUAGES = 3          # M1: minimum language communities
+INSIGHT_MIN_ARTICLES_PER_LANG = 50 # M1: minimum articles per language
+INSIGHT_MIN_ENTITY_MENTIONS = 10   # M3: minimum mentions for trajectory
+INSIGHT_MIN_COUNTRY_PAIR_ARTICLES = 10  # M5: minimum for BRI
+INSIGHT_MIN_STEEPS_E_ARTICLES = 50 # M6: minimum Economic articles

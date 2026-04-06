@@ -268,6 +268,8 @@ GlobalNews-Crawling-AgenticWorkflow/
 | "스캐닝 시작", "조사를 시작하자" | "start scanning", "begin research" | 상태에 따라 `/run` 또는 `/start` |
 | "다음 단계", "다음", "진행하자", "계속" | "next step", "continue", "proceed" | 상태에 따라 `/run` 또는 `/start` |
 | "autopilot으로 시작", "자동 모드로 시작" | "start in autopilot", "auto mode" | `/start` + autopilot 활성화 |
+| "통찰 분석", "인사이트 분석", "빅데이터 통찰" | "insight analysis", "run insights", "big data insights" | `/run` (mode=insight) |
+| "통찰 결과", "인사이트 결과" | "insight results", "show insights" | `data/insights/` 최신 결과 읽기 |
 | "상태 확인", "결과 확인", "현황" | "check status", "show results" | `.venv/bin/python main.py --mode status` |
 
 ### `/run` 실행 프로토콜 (워크플로우 완료 후)
@@ -282,6 +284,21 @@ GlobalNews-Crawling-AgenticWorkflow/
 5. .venv/bin/python main.py --mode full --date YYYY-MM-DD (실제 실행)
 6. 결과 리포트 (수집 건수, 분석 결과, 출력 파일)
 ```
+
+### `/run` Insight 모드 프로토콜 (빅데이터 통찰 분석)
+
+> Stage 1~4 산출물이 축적된 상태에서, 다중 날짜 윈도우에 대한 구조적 통찰을 생산한다.
+> 7개 모듈(M1~M7), 27개 지표, 92% 결정론적 Python(P1 봉쇄).
+
+```
+1. .venv/bin/python main.py --mode insight --window 30 --end-date YYYY-MM-DD
+2. 실행 배너 출력 (윈도우, 날짜 범위, 커버리지)
+3. 결과: data/insights/{run_id}/synthesis/insight_report.md 읽기
+4. 사용자에게 핵심 발견(key findings) 리포트
+```
+
+**윈도우 옵션**: `--window 7` (주간), `--window 30` (월간), `--window 90` (분기)
+**특정 모듈**: `--module m1_crosslingual` (교차언어만), `--module m5_geopolitical` (지정학만)
 
 ### `/start` 실행 프로토콜 (워크플로우 미완성 시)
 
